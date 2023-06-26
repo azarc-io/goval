@@ -392,7 +392,7 @@ func accessVar(variables map[string]interface{}, varName string) interface{} {
 	if !ok {
 		panic(fmt.Errorf("var error: variable %q does not exist", varName))
 	}
-	return val
+	return getNormalisedVar(val)
 }
 
 func accessField(s interface{}, field interface{}) interface{} {
@@ -406,7 +406,7 @@ func accessField(s interface{}, field interface{}) interface{} {
 		if !ok {
 			panic(fmt.Errorf("var error: object has no member %q", field))
 		}
-		return val
+		return getNormalisedVar(val)
 	}
 
 	arrVar, ok := s.([]interface{})
@@ -430,6 +430,19 @@ func accessField(s interface{}, field interface{}) interface{} {
 	}
 
 	panic(fmt.Errorf("syntax error: cannot access fields on type %s", typeOf(s)))
+}
+
+func getNormalisedVar(in interface{}) interface{} {
+	switch v := in.(type) {
+	case int32:
+		return int(v)
+	case int64:
+		return int(v)
+	case float32:
+		v2, _ := strconv.ParseFloat(fmt.Sprint(v), 64)
+		return v2
+	}
+	return in
 }
 
 func slice(v interface{}, from, to interface{}) interface{} {

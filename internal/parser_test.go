@@ -582,6 +582,27 @@ func Test_Equality_Simple(t *testing.T) {
 	assertEquality(t, nil, false, `""`, ` 0`)
 }
 
+func Test_Variables_With_All_Int_And_Floats(t *testing.T) {
+	vars := map[string]interface{}{
+		"int":   5,
+		"int32": int32(5),
+		"int64": int64(5),
+
+		"float":        5.2,
+		"float32":      float32(5.2),
+		"float64":      float64(5.2),
+		"float32Array": []interface{}{map[string]interface{}{"float32": float32(5.2)}},
+	}
+
+	assertEquality(t, vars, true, `int`, `5`)
+	assertEquality(t, vars, true, `int32`, `5`)
+	assertEquality(t, vars, true, `int64`, `5`)
+	assertEquality(t, vars, true, `float`, `5.2`)
+	assertEquality(t, vars, true, `float32`, `5.2`)
+	assertEquality(t, vars, true, `float64`, `5.2`)
+	assertEquality(t, vars, true, `float32Array[0].float32`, `5.2`)
+}
+
 func Test_Equality_Arrays(t *testing.T) {
 	vars := map[string]interface{}{
 		"null":     nil,
